@@ -1,0 +1,51 @@
+{% extends 'spa/base.html' %}
+{% block title %} MY SPA | ALL_POSTS {% endblock %}
+{% block content %}
+{% for post in posts %}
+    <br>
+    <div>
+              <div class="col-md-6">
+                  <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                    <div class="col p-4 d-flex flex-column position-static">
+                      <strong class="d-inline-block mb-2 text-primary-emphasis">{{ post.topic }}</strong>
+                      <p class="card-text mb-auto">{{ post.description }}</p>
+                      <div id="demo{{ post.id }}" class="collapse"><p class="text-center" >{{ post.topic }}</p>
+                          <form action="." method="POST" class="form-signin" name="registration_form">
+                             {% csrf_token %}
+                                 <form method="post">
+                                      {% csrf_token %}
+                                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                                        <input type="hidden" name="user_id" value="{{ request.user.id }}">
+                                     {{ form.text_comments }}
+                                      {{ form.data_comments }}
+                                      <input type="submit" value="Додати коментар">
+                                </form>
+                          </form>
+                      </div>
+                    </div>
+                    <div class="col-auto d-none d-lg-block">
+                        <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">{{ post.topic }}</text></svg>
+                        <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo{{ post.id }}">Comments</button>
+                    </div>
+                  </div>
+                   {% if comments %}
+                                                           <h4>Коментарі до цього поста</h4>
+
+                            {% for comment in comments %}
+                                {% if comment.post_id == post.id %}
+                                    <br>
+                                    <p>{{ comment.user.username }} => {{ comment.text_comments }} Створений =>{{ comment.data_comments|date:"d.m.y H:i" }}</p>
+                                {% endif %}
+                            {% endfor %}
+                    {% else %}
+                        <p>Немає коментарів.</p>
+                   {% endif %}
+
+                </div>
+
+            </div>
+    </div>
+    <br>
+    <hr>
+{% endfor %}
+{% endblock %}
